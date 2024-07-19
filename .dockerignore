@@ -1,0 +1,8 @@
+postgres
+postgis
+.idea
+.github
+LICENSE
+postgres.conf.sh
+README.md
+dockerbuild.sh
