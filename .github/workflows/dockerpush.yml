@@ -147,7 +147,7 @@ jobs:
 
       - name: Login to Aliyun Registry
         run: |
-          echo "$ALIYUN_REGISTRY_PASSWORD" | docker login -u $ALIYUN_REGISTRY_USER --password-stdin ${{ env.ALIYUN_REGISTRY }}
+          docker login -u $ALIYUN_REGISTRY_USER --password $ALIYUN_REGISTRY_PASSWORD ${{ env.ALIYUN_REGISTRY }}
 
       - name: Tag Docker Image for Aliyun Registry
         run: |
