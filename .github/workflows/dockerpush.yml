@@ -12,6 +12,8 @@ on:
 env:
   DOCKER_IMAGE_NAME: redgreat/postgres
   ALIYUN_REGISTRY: registry.cn-hangzhou.aliyuncs.com
+  ALIYUN_REGISTRY_USER: ${{ secrets.ALIYUN_REGISTRY_USER }}
+  ALIYUN_REGISTRY_PASSWORD: ${{ secrets.ALIYUN_REGISTRY_PASSWORD }}
   PLATFORMS: linux/amd64
 
 jobs:
@@ -147,7 +149,7 @@ jobs:
 
       - name: Login to Aliyun Registry
         run: |
-          docker login -u $ALIYUN_REGISTRY_USER --password $ALIYUN_REGISTRY_PASSWORD ${{ env.ALIYUN_REGISTRY }}
+          echo $ALIYUN_REGISTRY_PASSWORD | docker login ${{ env.ALIYUN_REGISTRY }} --username $ALIYUN_REGISTRY_USER --password-stdin
 
       - name: Tag Docker Image for Aliyun Registry
         run: |
