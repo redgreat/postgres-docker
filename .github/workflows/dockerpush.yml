@@ -35,7 +35,6 @@ jobs:
         id: prep
         run: |
           VERSION=unknown
-          ALIYUN_REGISTRY=registry.cn-hangzhou.aliyuncs.com
           if [[ $GITHUB_REF =~ refs/tags/* ]]; then
           # Git tag pushed: use tag as the version.
           VERSION=${GITHUB_REF#refs/tags/}
@@ -57,9 +56,9 @@ jobs:
           fi
           # Determine the Docker container tags.
           TAGS="***/postgres:${LABEL_VERSION}"
-          TAGS="$TAGS,$ALIYUN_REGISTRY/***/postgres:${LABEL_VERSION}"
+          TAGS="$TAGS,${{ env.ALIYUN_REGISTRY}}/${{ env.DOCKER_IMAGE_NAME}}:${LABEL_VERSION}"
           if [[ $GITHUB_REF =~ refs/tags/* ]]; then
-          TAGS="$TAGS,***/postgres:latest,$ALIYUN_REGISTRY/***/postgres:latest"
+          TAGS="$TAGS,${{ env.DOCKER_IMAGE_NAME }}:latest,${{ env.ALIYUN_REGISTRY}}/${{ env.DOCKER_IMAGE_NAME }}:latest"
           fi
           # Determine the release type.
           if [[ $GITHUB_REF =~ refs/tags/* ]]; then
@@ -129,7 +128,8 @@ jobs:
       - name: inspect
         if: ${{ steps.prep.outputs.is_release == 'yes' }}
         run: |
-          docker buildx imagetools inspect ${{env.DOCKER_IMAGE_NAME }}:${{ steps.prep.outputs.tags }}
+          docker buildx imagetools inspect ${{ env.DOCKER_IMAGE_NAME }}:${{ steps.prep.outputs.version }}
+          docker buildx imagetools inspect ${{ env.ALIYUN_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.prep.outputs.version }}
 
       - name: dockerhub description
         if: ${{ steps.prep.outputs.release_type == 'standard' }}
