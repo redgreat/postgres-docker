@@ -35,53 +35,57 @@ jobs:
         id: prep
         run: |
           VERSION=unknown
-          LABEL_VERSION=""
-          TAGS=""
-          IS_RELEASE="no"
-          RELEASE_TYPE="n/a"
-          
-          # 使用 case 语句来处理不同的 GITHUB_REF 情况
-          case "$GITHUB_REF" in
-          refs/tags/*)
+          if [[ $GITHUB_REF =~ refs/tags/* ]]; then
+          # Git tag pushed: use tag as the version.
           VERSION=${GITHUB_REF#refs/tags/}
-          IS_RELEASE="yes"
-          ;;
-          refs/heads/*)
+          elif [[ $GITHUB_REF =~ refs/heads/* ]]; then
+          # Git commit pushed: use the commit SHA as the version.
           VERSION=${GITHUB_SHA::8}
-          ;;
-          refs/pull/*)
-          VERSION=pr-${{ github.event.number }}
-          ;;
-          *)
-          ho "::error::Unexpected GITHUB_REF: $GITHUB_REF"
-          exit 1
-          ;;
-          esac
-          
-          # 移除 "v" 标签，如果存在的话
-          if [[ "$VERSION" =~ ^v[0-9]+(\.[0-9]+)*$ ]]; then
-          LABEL_VERSION=${VERSION:1}
+          elif [[ $GITHUB_REF =~ refs/pull/* ]]; then
+          # Pull request: use PR number as the version.
+          VERSION=pr-
           else
-          LABEL_VERSION=$VERSION
+          echo "::error::Unexpected GITHUB_REF: $GITHUB_REF"
+          exit 1
           fi
-          
-          # 设置标签
-          TAGS="${{ env.DOCKER_IMAGE_NAME }}:${VERSION}"
-          if [ "$IS_RELEASE" = "yes" ]; then
-          TAGS="$TAGS,${{ env.DOCKER_IMAGE_NAME }}:latest"
+          # Determine the version to put in container label.
+          LABEL_VERSION=${VERSION}
+          if [[ $GITHUB_REF =~ refs/tags/* ]]; then
+          # Do not include the starting 'v' of the version.
+          LABEL_VERSION=${VERSION:1}
           fi
-          
-          # 检查预发布版本
-          if [ "$IS_RELEASE" = "yes" ] && [[ "$VERSION" =~ -pre\.[0-9]+ ]]; then
+          # Determine the Docker container tags.
+          TAGS="***/postgres:${VERSION}"
+          if [[ $GITHUB_REF =~ refs/tags/* ]]; then
+          TAGS="$TAGS,***/postgres:latest"
+          fi
+          # Determine the release type.
+          if [[ $GITHUB_REF =~ refs/tags/* ]]; then
+          IS_RELEASE=yes
+          if [[ $GITHUB_REF =~ -pre\.[0-9]+ ]]; then
           RELEASE_TYPE="pre"
+          else
+          RELEASE_TYPE="standard"
           fi
-          
-          # 输出结果到 GitHub 输出
-          echo "is_release=$IS_RELEASE" >> $GITHUB_OUTPUT
-          echo "release_type=$RELEASE_TYPE" >> $GITHUB_OUTPUT
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "label_version=$LABEL_VERSION" >> $GITHUB_OUTPUT
-          echo "tags=$TAGS" >> $GITHUB_OUTPUT
+          else
+          IS_RELEASE=no
+          RELEASE_TYPE="n/a"
+          fi
+          # Print results.
+          echo "::group::Results"
+          echo "Github reference: $GITHUB_REF"
+          echo "Release: $IS_RELEASE"
+          echo "Release type: $RELEASE_TYPE"
+          echo "Docker container version: $VERSION"
+          echo "Docker container version label: $LABEL_VERSION"
+          echo "Docker container tag(s): $TAGS"
+          echo "::endgroup::"
+          # Export outputs.
+          echo "is_release=${IS_RELEASE}" >> $GITHUB_OUTPUT
+          echo "release_type=${RELEASE_TYPE}" >> $GITHUB_OUTPUT
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "label_version=${LABEL_VERSION}" >> $GITHUB_OUTPUT
+          echo "tags=${TAGS}" >> $GITHUB_OUTPUT
           echo "build_date=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
 
       - name: setup QEMU
