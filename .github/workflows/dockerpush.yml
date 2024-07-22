@@ -55,8 +55,8 @@ jobs:
           LABEL_VERSION=${VERSION:1}
           fi
           # Determine the Docker container tags.
-          TAGS="***/postgres:${VERSION}"
-          TAGS="$TAGS,${{ env.ALIYUN_REGISTRY}}/${{ env.DOCKER_IMAGE_NAME}}:${VERSION}"
+          TAGS="${{ env.DOCKER_IMAGE_NAME}}:${LABEL_VERSION}"
+          TAGS="$TAGS,${{ env.ALIYUN_REGISTRY}}/${{ env.DOCKER_IMAGE_NAME}}:${LABEL_VERSION}"
           if [[ $GITHUB_REF =~ refs/tags/* ]]; then
           TAGS="$TAGS,${{ env.DOCKER_IMAGE_NAME }}:latest,${{ env.ALIYUN_REGISTRY}}/${{ env.DOCKER_IMAGE_NAME }}:latest"
           fi
