@@ -35,6 +35,8 @@ jobs:
         id: prep
         run: |
           VERSION=unknown
+          DOCKER_IMAGE_NAME = redgreat/postgres
+          ALIYUN_REGISTRY = registry.cn-hangzhou.aliyuncs.com
           if [[ $GITHUB_REF =~ refs/tags/* ]]; then
           # Git tag pushed: use tag as the version.
           VERSION=${GITHUB_REF#refs/tags/}
@@ -56,8 +58,9 @@ jobs:
           fi
           # Determine the Docker container tags.
           TAGS="***/postgres:${LABEL_VERSION}"
+          TAGS="$TAGS,$ALIYUN_REGISTRY/***/postgres:${LABEL_VERSION}"
           if [[ $GITHUB_REF =~ refs/tags/* ]]; then
-          TAGS="$TAGS,***/postgres:latest"
+          TAGS="$TAGS,***/postgres:latest,$ALIYUN_REGISTRY/***/postgres:latest"
           fi
           # Determine the release type.
           if [[ $GITHUB_REF =~ refs/tags/* ]]; then
@@ -119,10 +122,7 @@ jobs:
           provenance: false
           platforms: ${{ env.PLATFORMS }}
           tags: |
-            ${{env.DOCKER_IMAGE_NAME }}:${{ steps.prep.outputs.label_version }}
-            ${{env.DOCKER_IMAGE_NAME }}:latest
-            ${{ env.ALIYUN_REGISTRY }}/${{env.DOCKER_IMAGE_NAME }}:${{ steps.prep.outputs.label_version }}
-            ${{ env.ALIYUN_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:latest
+            ${{env.DOCKER_IMAGE_NAME }}:${{ steps.prep.outputs.tags }}
           build-args: |
             DOCKER_IMAGE_VERSION=${{ steps.prep.outputs.label_version }}
           cache-from: type=gha,scope=${{ env.DOCKER_IMAGE_NAME }}
@@ -131,10 +131,7 @@ jobs:
       - name: inspect
         if: ${{ steps.prep.outputs.is_release == 'yes' }}
         run: |
-          docker buildx imagetools inspect ${{env.DOCKER_IMAGE_NAME }}:${{ steps.prep.outputs.label_version }}
-          docker buildx imagetools inspect ${{env.DOCKER_IMAGE_NAME }}:latest
-          docker buildx imagetools inspect ${{ env.ALIYUN_REGISTRY }}/${{env.DOCKER_IMAGE_NAME }}:${{ steps.prep.outputs.label_version }}
-          docker buildx imagetools inspect ${{ env.ALIYUN_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:latest
+          docker buildx imagetools inspect ${{env.DOCKER_IMAGE_NAME }}:${{ steps.prep.outputs.tags }}
 
       - name: dockerhub description
         if: ${{ steps.prep.outputs.release_type == 'standard' }}
@@ -143,13 +140,4 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: ${{ env.DOCKER_IMAGE_NAME }}
-          readme-filepath: README.Docker.md
-
-      - name: aliyun registry description
-        if: ${{ steps.prep.outputs.release_type == 'standard' }}
-        uses: peter-evans/dockerhub-description@v4
-        with:
-          username: ${{ secrets.ALIYUN_REGISTRY_USER }}
-          password: ${{ secrets.ALIYUN_REGISTRY_PASSWORD }}
-          repository: ${{ env.ALIYUN_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}
           readme-filepath: README.Docker.md
