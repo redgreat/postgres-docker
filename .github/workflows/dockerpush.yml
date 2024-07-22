@@ -129,10 +129,18 @@ jobs:
 
       - name: Dockerhub description
         if: ${{ steps.prep.outputs.release_type == 'standard' }}
-        uses: peter-evans/dockerhub-description@v3
+        uses: peter-evans/dockerhub-description@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: |
-            ${{ env.DOCKER_IMAGE_NAME }}
+          repository: ${{ env.DOCKER_IMAGE_NAME }}
+          readme-filepath: README.Docker.md
+
+      - name: aliyun registry description
+        if: ${{ steps.prep.outputs.release_type == 'standard' }}
+        uses: peter-evans/dockerhub-description@v4
+        with:
+          username: ${{ secrets.ALIYUN_REGISTRY_USER }}
+          password: ${{ secrets.ALIYUN_REGISTRY_PASSWORD }}
+          repository: ${{ env.ALIYUN_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}
           readme-filepath: README.Docker.md
