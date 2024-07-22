@@ -35,8 +35,7 @@ jobs:
         id: prep
         run: |
           VERSION=unknown
-          DOCKER_IMAGE_NAME = redgreat/postgres
-          ALIYUN_REGISTRY = registry.cn-hangzhou.aliyuncs.com
+          ALIYUN_REGISTRY=registry.cn-hangzhou.aliyuncs.com
           if [[ $GITHUB_REF =~ refs/tags/* ]]; then
           # Git tag pushed: use tag as the version.
           VERSION=${GITHUB_REF#refs/tags/}
