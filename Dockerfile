@@ -144,6 +144,6 @@ RUN set -eux \
 # from the '/_pgis_full_version.txt' file. This is for experimental and internal purposes.
     && cat /_pgis_full_version.txt
 
-COPY initdb-pgcron.sh /docker-entrypoint-initdb.d/00_pgcron.sh
+COPY initdb-extensions.sh /docker-entrypoint-initdb.d/00_pgcron.sh
 COPY initdb-postgis.sh /docker-entrypoint-initdb.d/10_postgis.sh
 COPY update-postgis.sh /usr/local/bin
