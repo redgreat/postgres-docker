@@ -55,7 +55,7 @@ jobs:
           LABEL_VERSION=${VERSION:1}
           fi
           # Determine the Docker container tags.
-          TAGS="***/postgres:${VERSION}"
+          TAGS="***/postgres:${LABEL_VERSION}"
           if [[ $GITHUB_REF =~ refs/tags/* ]]; then
           TAGS="$TAGS,***/postgres:latest"
           fi
@@ -119,8 +119,8 @@ jobs:
           provenance: false
           platforms: ${{ env.PLATFORMS }}
           tags: |
-            ${{ steps.prep.outputs.tags }}
-            ${{ env.ALIYUN_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.prep.outputs.label_version }}
+            ${{ steps.prep.outputs.tags }},
+            ${{ env.ALIYUN_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:${{ steps.prep.outputs.label_version }},
             ${{ env.ALIYUN_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:latest
           build-args: |
             DOCKER_IMAGE_VERSION=${{ steps.prep.outputs.label_version }}
