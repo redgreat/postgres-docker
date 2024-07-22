@@ -128,12 +128,15 @@ jobs:
           cache-from: type=gha,scope=${{ env.DOCKER_IMAGE_NAME }}
           cache-to: type=gha,mode=max,scope=${{ env.DOCKER_IMAGE_NAME }}
 
-      - name: Inspect
+      - name: inspect
         if: ${{ steps.prep.outputs.is_release == 'yes' }}
         run: |
-          docker buildx imagetools inspect ${{ env.DOCKER_IMAGE_NAME }}:${{ steps.prep.outputs.version }}
+          docker buildx imagetools inspect ${{env.DOCKER_IMAGE_NAME }}:${{ steps.prep.outputs.label_version }}
+          docker buildx imagetools inspect ${{env.DOCKER_IMAGE_NAME }}:latest
+          docker buildx imagetools inspect ${{ env.ALIYUN_REGISTRY }}/${{env.DOCKER_IMAGE_NAME }}:${{ steps.prep.outputs.label_version }}
+          docker buildx imagetools inspect ${{ env.ALIYUN_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:latest
 
-      - name: Dockerhub description
+      - name: dockerhub description
         if: ${{ steps.prep.outputs.release_type == 'standard' }}
         uses: peter-evans/dockerhub-description@v4
         with:
