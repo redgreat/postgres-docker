@@ -120,8 +120,7 @@ jobs:
           push: ${{ steps.prep.outputs.is_release == 'yes' }}
           provenance: false
           platforms: ${{ env.PLATFORMS }}
-          tags: |
-            ${{env.DOCKER_IMAGE_NAME }}:${{ steps.prep.outputs.tags }}
+          tags: ${{ steps.prep.outputs.tags }}
           build-args: |
             DOCKER_IMAGE_VERSION=${{ steps.prep.outputs.label_version }}
           cache-from: type=gha,scope=${{ env.DOCKER_IMAGE_NAME }}
