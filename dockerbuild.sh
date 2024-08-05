@@ -2,7 +2,7 @@
 # docker build script
 
 # 提前拉取镜像（反复打包测试时免除每次pull）
-sudo docker pull postgres:16-alpine3.20
+sudo docker pull postgres:16-bookworm
 
 # 清理镜像
 sudo docker stop postgres
