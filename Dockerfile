@@ -88,19 +88,19 @@ ENV DOCKER_CMAKE_BUILD_TYPE=${DOCKER_CMAKE_BUILD_TYPE}
 # one can benefit from the latest CGAL patches while avoiding compatibility issues.
 ARG CGAL_GIT_BRANCH
 ENV CGAL_GIT_BRANCH=${CGAL_GIT_BRANCH}
-ENV CGAL5X_GIT_HASH dfa981a844c121f4407e1f83092ccc533197b932
-ENV SFCGAL_GIT_HASH a976da3b52692f4d3c30c898eac80673f8507b6d
+# ENV CGAL5X_GIT_HASH dfa981a844c121f4407e1f83092ccc533197b932
+# ENV SFCGAL_GIT_HASH a976da3b52692f4d3c30c898eac80673f8507b6d
 RUN set -ex \
     && mkdir -p /usr/src \
     && cd /usr/src \
     && git clone --branch ${CGAL_GIT_BRANCH} https://github.com/CGAL/cgal  \
     && cd cgal \
-    && git checkout ${CGAL5X_GIT_HASH} \
+    # && git checkout ${CGAL5X_GIT_HASH} \
     && git log -1 > /_pgis_cgal_last_commit.txt \
     && cd /usr/src \
     && git clone https://gitlab.com/SFCGAL/SFCGAL.git \
     && cd SFCGAL \
-    && git checkout ${SFCGAL_GIT_HASH} \
+    # && git checkout ${SFCGAL_GIT_HASH} \
     && git log -1 > /_pgis_sfcgal_last_commit.txt \
     && mkdir cmake-build \
     && cd cmake-build \
@@ -122,12 +122,13 @@ RUN set -ex \
     && rm -fr /usr/src/cgal
 
 # proj
-ENV PROJ_GIT_HASH cce46228bde5b7dfa6d3b9048865f43dfbbeda30
+# ENV PROJ_GIT_HASH cce46228bde5b7dfa6d3b9048865f43dfbbeda30
+
 RUN set -ex \
     && cd /usr/src \
     && git clone https://github.com/OSGeo/PROJ.git \
     && cd PROJ \
-    && git checkout ${PROJ_GIT_HASH} \
+    # && git checkout ${PROJ_GIT_HASH} \
     && git log -1 > /_pgis_proj_last_commit.txt \
     # check the autotools exist? https://github.com/OSGeo/PROJ/pull/3027
     && if [ -f "autogen.sh" ] ; then \
@@ -152,12 +153,12 @@ RUN set -ex \
     && rm -fr /usr/src/PROJ
 
 # geos
-ENV GEOS_GIT_HASH 42546119c35e65aad72dea1477eb4a057ead631e
+# ENV GEOS_GIT_HASH 42546119c35e65aad72dea1477eb4a057ead631e
 RUN set -ex \
     && cd /usr/src \
     && git clone https://github.com/libgeos/geos.git \
     && cd geos \
-    && git checkout ${GEOS_GIT_HASH} \
+    # && git checkout ${GEOS_GIT_HASH} \
     && git log -1 > /_pgis_geos_last_commit.txt \
     && mkdir cmake-build \
     && cd cmake-build \
@@ -168,12 +169,12 @@ RUN set -ex \
     && rm -fr /usr/src/geos
 
 # gdal
-ENV GDAL_GIT_HASH 0c57764ec2040c4e53c0313844ea5afccdc00279
+# ENV GDAL_GIT_HASH 0c57764ec2040c4e53c0313844ea5afccdc00279
 RUN set -ex \
     && cd /usr/src \
     && git clone https://github.com/OSGeo/gdal.git \
     && cd gdal \
-    && git checkout ${GDAL_GIT_HASH} \
+    # && git checkout ${GDAL_GIT_HASH} \
     && git log -1 > /_pgis_gdal_last_commit.txt \
     \
     # gdal project directory structure - has been changed !
@@ -302,11 +303,11 @@ COPY ./mysql/* /tmp/
 
 ARG CGAL_GIT_BRANCH
 ENV CGAL_GIT_BRANCH=${CGAL_GIT_BRANCH}
-ENV CGAL5X_GIT_HASH dfa981a844c121f4407e1f83092ccc533197b932
-ENV SFCGAL_GIT_HASH a976da3b52692f4d3c30c898eac80673f8507b6d
-ENV PROJ_GIT_HASH cce46228bde5b7dfa6d3b9048865f43dfbbeda30
-ENV GEOS_GIT_HASH 42546119c35e65aad72dea1477eb4a057ead631e
-ENV GDAL_GIT_HASH 0c57764ec2040c4e53c0313844ea5afccdc00279
+# ENV CGAL5X_GIT_HASH dfa981a844c121f4407e1f83092ccc533197b932
+# ENV SFCGAL_GIT_HASH a976da3b52692f4d3c30c898eac80673f8507b6d
+# ENV PROJ_GIT_HASH cce46228bde5b7dfa6d3b9048865f43dfbbeda30
+# ENV GEOS_GIT_HASH 42546119c35e65aad72dea1477eb4a057ead631e
+# ENV GDAL_GIT_HASH 0c57764ec2040c4e53c0313844ea5afccdc00279
 
 # Minimal command line test ( fail fast )
 RUN set -ex \
@@ -325,7 +326,7 @@ RUN set -ex \
             || echo "ogr2ogr missing PostgreSQL driver" && exit 1
 
 # install postgis
-ENV POSTGIS_GIT_HASH 95c525d310b783db4a52d85506ef3cc713238683
+# ENV POSTGIS_GIT_HASH 95c525d310b783db4a52d85506ef3cc713238683
 
 RUN set -ex \
     && apt-get update \
@@ -364,7 +365,7 @@ RUN set -ex \
     && cd /usr/src/ \
     && git clone https://github.com/postgis/postgis.git \
     && cd postgis \
-    && git checkout ${POSTGIS_GIT_HASH} \
+    # && git checkout ${POSTGIS_GIT_HASH} \
     && git log -1 > /_pgis_last_commit.txt \
     && ./autogen.sh \
 # configure options taken from:
@@ -402,7 +403,7 @@ RUN set -ex \
     && su postgres -c 'pg_ctl -D /tempdb --mode=immediate stop' \
     && rm -rf /tempdb \
     && rm -rf /tmp/logfile \
-    && rm -rf /tmp/pgis_reg \
+    && rm -rf /tmp/pgis_reg
 
 # install FDWS
 ENV TZ=Asia/Shanghai \
