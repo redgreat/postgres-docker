@@ -410,8 +410,8 @@ ENV TZ=Asia/Shanghai \
     LANG=zh_CN.UTF-8 \
     ORACLE_HOME=/Oracle \
     LD_LIBRARY_PATH=/Oracle \
-    ORACLE_VERSION=19.23.0.0.0 \
-    ORACLE_DIR_NAME=instantclient_19_23 \
+    ORACLE_VERSION=19.24.0.0.0 \
+    ORACLE_DIR_NAME=instantclient_19_24 \
     ORACLE_FDW_VERSION=2_7_0 \
     TDS_FDW_VERSION=2.0.3 \
     PG_CRON_VERSION=1.2.0 \
@@ -428,8 +428,8 @@ RUN set -x \
     && apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates wget unzip make postgresql-server-dev-"${PG_MAJOR}" gcc libc6-dev libssl-dev libkrb5-dev libaio1 libsybdb5 freetds-dev freetds-common gnupg \
 # install oracle_fdw
-    && wget -O /tmp/instantclient-basic.zip  https://download.oracle.com/otn_software/linux/instantclient/19600/instantclient-basiclite-linux.x64-"${ORACLE_VERSION}"dbru.zip \
-    && wget -O /tmp/instantclient-sdk.zip  https://download.oracle.com/otn_software/linux/instantclient/19600/instantclient-sdk-linux.x64-"${ORACLE_VERSION}"dbru.zip \
+    && wget -O /tmp/instantclient-basic.zip  https://download.oracle.com/otn_software/linux/instantclient/1924000/instantclient-basiclite-linux.x64-"${ORACLE_VERSION}"dbru.zip \
+    && wget -O /tmp/instantclient-sdk.zip  https://download.oracle.com/otn_software/linux/instantclient/192400/instantclient-sdk-linux.x64-"${ORACLE_VERSION}"dbru.zip \
     && unzip /tmp/instantclient-basic.zip -d /tmp/Oracle \
     && unzip /tmp/instantclient-sdk.zip -d /tmp/Oracle \
     && mv /tmp/Oracle/"${ORACLE_DIR_NAME}" /Oracle \
