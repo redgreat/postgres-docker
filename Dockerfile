@@ -414,7 +414,6 @@ ENV TZ=Asia/Shanghai \
     ORACLE_DIR_NAME=instantclient_19_24 \
     ORACLE_FDW_VERSION=2_7_0 \
     TDS_FDW_VERSION=2.0.3 \
-    PG_CRON_VERSION=1.2.0 \
     PG_STAT_MONITOR_VERSION=2.0.4 \
     PG_UUIDV7_VERSION=1.5.0 \
     MYSQL_FDW_VERSION=2_9_2
@@ -443,11 +442,11 @@ RUN set -x \
     && unzip /tmp/tds_fdw.zip  -d /tmp \
     && cd /tmp/tds_fdw-"${TDS_FDW_VERSION}" \
     && make USE_PGXS=1 -j$(nproc) install \
-# install pg_cron
-    && wget -O /tmp/pg_cron.zip https://github.com/citusdata/pg_cron/archive/v"${PG_CRON_VERSION}".zip \
-    && unzip /tmp/pg_cron.zip  -d /tmp \
-    && cd /tmp/pg_cron-"${PG_CRON_VERSION}" \
-    && make USE_PGXS=1 -j$(nproc) && make USE_PGXS=1 -j$(nproc) install \
+# build pg_cron
+    && git clone --depth 1 https://github.com/citusdata/pg_cron.git /tmp/pg_cron\
+    && cd /tmp/pg_cron \
+    && make USE_PGXS=1 -j$(nproc) \
+    && make USE_PGXS=1 install \
 # install mysql_fdw
     && dpkg -i /mysql-server_8.4.0-1debian12_amd64.deb  \
       /tmp/libmysqlclient24_8.4.0-1debian12_amd64.deb  \
