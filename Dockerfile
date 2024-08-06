@@ -408,7 +408,6 @@ RUN set -ex \
 # install FDWS
 ENV TZ=Asia/Shanghai \
     LANG=zh_CN.UTF-8 \
-    PG_PATHMAN_VERSION=1.5.12 \
     ORACLE_HOME=/Oracle \
     LD_LIBRARY_PATH=/Oracle \
     ORACLE_VERSION=19.23.0.0.0 \
@@ -428,11 +427,6 @@ RUN set -x \
 # install dev
     && apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates wget unzip make postgresql-server-dev-"${PG_MAJOR}" gcc libc6-dev libssl-dev libkrb5-dev libaio1 libsybdb5 freetds-dev freetds-common gnupg \
-# install pg_pathman
-    && wget -O /tmp/pg_pathman.zip https://github.com/postgrespro/pg_pathman/archive/"${PG_PATHMAN_VERSION}".zip \
-    && unzip /tmp/pg_pathman.zip  -d /tmp \
-    && cd /tmp/pg_pathman-"${PG_PATHMAN_VERSION}"\
-    && make USE_PGXS=1 -j$(nproc) install \
 # install oracle_fdw
     && wget -O /tmp/instantclient-basic.zip  https://download.oracle.com/otn_software/linux/instantclient/19600/instantclient-basiclite-linux.x64-"${ORACLE_VERSION}"dbru.zip \
     && wget -O /tmp/instantclient-sdk.zip  https://download.oracle.com/otn_software/linux/instantclient/19600/instantclient-sdk-linux.x64-"${ORACLE_VERSION}"dbru.zip \
@@ -517,7 +511,6 @@ RUN set -x \
     && rm -rf /tmp/* \
     && rm -rf /usr/src/postgis \
     && rm -rf /var/lib/apt/lists/*
-
 
 RUN mkdir -p /docker-entrypoint-initdb.d
 COPY ./initdb-postgis.sh /docker-entrypoint-initdb.d/10_postgis.sh
