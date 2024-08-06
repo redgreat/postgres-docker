@@ -447,7 +447,7 @@ RUN set -x \
     && wget -O /tmp/pg_cron.zip https://github.com/citusdata/pg_cron/archive/v"${PG_CRON_VERSION}".zip \
     && unzip /tmp/pg_cron.zip  -d /tmp \
     && cd /tmp/pg_cron-"${PG_CRON_VERSION}" \
-    && make -j$(nproc) && make -j$(nproc) install \
+    && make USE_PGXS=1 -j$(nproc) && make USE_PGXS=1 -j$(nproc) install \
 # install mysql_fdw
     && dpkg -i /mysql-server_8.4.0-1debian12_amd64.deb  \
       /tmp/libmysqlclient24_8.4.0-1debian12_amd64.deb  \
