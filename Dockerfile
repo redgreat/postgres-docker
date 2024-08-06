@@ -408,7 +408,7 @@ RUN set -ex \
 # install FDWS
 ENV TZ=Asia/Shanghai \
     LANG=zh_CN.UTF-8 \
-    PG_PATHMAN_VERSION=5.1.0 \
+    PG_PATHMAN_VERSION=1.5.12 \
     ORACLE_HOME=/Oracle \
     LD_LIBRARY_PATH=/Oracle \
     ORACLE_VERSION=19.23.0.0.0 \
