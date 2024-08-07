@@ -463,7 +463,7 @@ RUN set -x \
     && make USE_PGXS=1 -j$(nproc) \
     && make USE_PGXS=1 install \
 # install uuidv7 \
-    && wget -O /tmp/pg_uuidv7.zip https://codeload.github.com/fboulnois/pg_uuidv7/zip/refs/tags/v"${PG_UUIDV7_VERSION}".zip \
+    && wget -O /tmp/pg_uuidv7.zip https://github.com/fboulnois/pg_uuidv7/archive/v"${PG_UUIDV7_VERSION}".zip \
     && unzip /tmp/pg_uuidv7.zip  -d /tmp \
     && cd /tmp/pg_uuidv7-"${PG_UUIDV7_VERSION}" \
     && make USE_PGXS=1 -j$(nproc) \
