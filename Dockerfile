@@ -449,8 +449,9 @@ RUN set -x \
     && make USE_PGXS=1 install \
 # install mysql_fdw
     && dpkg -i /tmp/mysql-common_8.4.0-1debian12_amd64.deb \
-      /tmp/libmysqlclient24_8.4.0-1debian12_amd64.deb \
-      /tmp/libmysqlclient-dev_8.4.0-1debian12_amd64.deb \
+    /tmp/mysql-community-client-plugins_8.4.0-1debian12_amd64.deb \
+    /tmp/libmysqlclient24_8.4.0-1debian12_amd64.deb \
+    /tmp/libmysqlclient-dev_8.4.0-1debian12_amd64.deb \
     && wget -O /tmp/mysql_fdw.zip https://github.com/EnterpriseDB/mysql_fdw/archive/REL-"${MYSQL_FDW_VERSION}".zip \
     && unzip /tmp/mysql_fdw.zip  -d /tmp \
     && cd /tmp/mysql_fdw-REL-"${MYSQL_FDW_VERSION}" \
